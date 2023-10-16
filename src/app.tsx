@@ -1,23 +1,13 @@
 import { useEffect, useState, JSX, useReducer, useRef } from "uelements";
 import SmallComponent from "./Components/SmallComponent";
 import { Crossicon, Muteicon, UnMuteicon } from "./assets/Icons";
+import { State, Action } from "./types/index";
 
-type State = {
-  toogleopen: boolean;
-  videolength: number | null;
-  ismute: boolean;
-}
-
-type Action =
-  | { type: "SETTOGGLE"; payload: any }
-  | { type: "SETVIDEOLENGTH"; payload: any }
-  | { type: "SETToggle"; payload: any };
-
-function sahireducer(state: State, action: Action) {
+function reducer(state: State, action: Action) {
   const { type, payload } = action;
   switch (type) {
     case "SETTOGGLE":
-      return { ...state, toogleopen: !state.toogleopen };
+      return { ...state, toggleOpen: !state.toggleOpen };
     case "SETVIDEOLENGTH":
       return { ...state, videolength: payload };
     case "SETToggle":
@@ -26,13 +16,13 @@ function sahireducer(state: State, action: Action) {
 }
 
 const initialState = {
-  toogleopen: false,
+  toggleOpen: false,
   videolength: null,
   ismute: false,
 };
 
 function App({ dataURL }: { dataURL: string }): JSX.Element {
-  const [state, dispatch] = useReducer(sahireducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const videoEl = useRef<HTMLVideoElement>(null);
   const [count, setCount] = useState(0);
 
@@ -59,7 +49,7 @@ function App({ dataURL }: { dataURL: string }): JSX.Element {
   }, [videoEl.current]);
 
   const handleTimeUpdate = () => {
-    const progress = (videoEl.current!.currentTime / state.videolength!) * 100;
+    const progress = (videoEl.current!?.currentTime / state.videolength!) * 100;
     setCount(progress);
   };
 
@@ -71,9 +61,8 @@ function App({ dataURL }: { dataURL: string }): JSX.Element {
       videoEl.current!.muted = false;
     }
   };
-  
 
-  if (state.toogleopen) {
+  if (state.toggleOpen) {
     return (
       <div>
         <div className="overlay-thing"></div>
@@ -125,7 +114,9 @@ function App({ dataURL }: { dataURL: string }): JSX.Element {
     <>
       {/* <div onClick={handlePopup} > */}
       <SmallComponent
-        video={"https://f22videoplugin.s3.ap-northeast-1.amazonaws.com/lapp/lappintro.mp4"}
+        video={
+          "https://f22videoplugin.s3.ap-northeast-1.amazonaws.com/lapp/lappintro.mp4"
+        }
         handlePopup={handlePopup}
       />
       {/* </div> */}
